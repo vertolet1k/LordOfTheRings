@@ -166,4 +166,11 @@ public class GUI extends JFrame {
         
         infoPanel.add(panel);
     }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            GUI gui = new GUI();
+            gui.setVisible(true);
+        });
+    }
 } 
