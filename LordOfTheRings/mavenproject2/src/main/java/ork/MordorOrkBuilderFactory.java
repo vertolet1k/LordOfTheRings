@@ -11,7 +11,7 @@ import gear.*;
  * @author vika
  */
 public class MordorOrkBuilderFactory implements OrkBuilderFactory {
-    private final OrcGearFactory gearFactory;
+    private OrcGearFactory gearFactory;
 
     public MordorOrkBuilderFactory() {
         this.gearFactory = new MordorGearFactory();

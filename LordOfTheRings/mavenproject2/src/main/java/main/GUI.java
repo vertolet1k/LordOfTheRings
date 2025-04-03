@@ -31,12 +31,14 @@ public class GUI extends JFrame {
         tribeFactories.put("Misty Mountains", new MistyMountainsOrkBuilderFactory());
 
         tribeOrcs = new HashMap<>();
-        tribeFactories.keySet().forEach(tribe -> tribeOrcs.put(tribe, new ArrayList<>()));
+        for (String tribe : tribeFactories.keySet()) {
+            tribeOrcs.put(tribe, new ArrayList<>());
+        }
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Mordor Army");
-        tribeFactories.keySet().forEach(tribe -> 
-            root.add(new DefaultMutableTreeNode(tribe))
-        );
+        for (String tribe : tribeFactories.keySet()) {
+            root.add(new DefaultMutableTreeNode(tribe));
+        }
         treeModel = new DefaultTreeModel(root);
         armyTree = new JTree(treeModel);
 
@@ -44,11 +46,8 @@ public class GUI extends JFrame {
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Orc Information"));
 
-        JSplitPane splitPane = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT,
-            new JScrollPane(armyTree),
-            new JScrollPane(infoPanel)
-        );
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(armyTree),
+            new JScrollPane(infoPanel));
         splitPane.setDividerLocation(300);
 
         JPanel controlPanel = new JPanel();
@@ -62,7 +61,9 @@ public class GUI extends JFrame {
 
         armyTree.addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) armyTree.getLastSelectedPathComponent();
-            if (node == null) return;
+            if (node == null){
+                    return;
+            }
             
             Object userObject = node.getUserObject();
             if (userObject instanceof Ork) {
@@ -102,11 +103,14 @@ public class GUI extends JFrame {
             String type = (String) typeCombo.getSelectedItem();
 
             OrcDirector director = new OrcDirector(tribeFactories.get(tribe));
-            Ork newOrc = switch (type) {
-                case "Leader" -> director.createLeaderOrk(name);
-                case "Scout" -> director.createScoutOrk(name);
-                default -> director.createBasicOrk(name);
-            };
+            Ork newOrc;
+            if ("Leader".equals(type)) {
+                newOrc = director.createLeaderOrk(name);
+            } else if ("Scout".equals(type)) {
+                newOrc = director.createScoutOrk(name);
+            } else {
+                newOrc = director.createBasicOrk(name);
+            }
 
             tribeOrcs.get(tribe).add(newOrc);
             DefaultMutableTreeNode tribeNode = findTribeNode(tribe);
@@ -161,12 +165,5 @@ public class GUI extends JFrame {
         panel.add(bar, BorderLayout.CENTER);
         
         infoPanel.add(panel);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            GUI gui = new GUI();
-            gui.setVisible(true);
-        });
     }
 } 
